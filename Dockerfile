@@ -43,10 +43,3 @@ USER appuser
 # Copy the source code into the container.
 COPY /services/app .
 
-# Expose the port that the application listens on.t
-# EXPOSE 8000
-
-# # Run the application.
-# ENTRYPOINT [ "gunicorn", "-w", "4", "-b", "0.0.0.0", "main:app"]
-
-HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1

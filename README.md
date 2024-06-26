@@ -1,5 +1,4 @@
 # Vocabulary List
 
 ### TODO
-- add blueprints
-- move stuff into app/
+- figure out what to do with manage.py

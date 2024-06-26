@@ -9,10 +9,21 @@
 # https://github.com/docker/awesome-compose
 services:
   server:
-    build:
-      context: .
-    ports:
-      - 8000:8000
+      build: 
+        context: .
+      command: gunicorn -w 4 -b 0.0.0.0 project.app:app # python manage.py run -h 0.0.0.0
+      volumes:
+        - ./services/app/:/usr/src/app/
+      ports:
+        - 8000:8000
+      env_file:
+        - ./.env.dev
+
+  # server:
+  #   build:
+  #     context: .
+  #   ports:
+  #     - 8000:8000
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

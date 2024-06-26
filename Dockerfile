@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/go/dockerfile-reference/
@@ -16,7 +14,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /services/app
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
@@ -34,18 +32,21 @@ RUN adduser \
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
 # Leverage a bind mount to requirements.txt to avoid having to copy them into
 # into this layer.
+RUN pip3 install --upgrade pip
 RUN --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python3 -m pip install -r requirements.txt
+    --mount=type=bind,source=/services/app/requirements.txt,target=requirements.txt \
+    pip3 install -r requirements.txt
 
 # Switch to the non-privileged user to run the application.
 USER appuser
 
 # Copy the source code into the container.
-COPY . .
+COPY /services/app .
 
 # Expose the port that the application listens on.t
-EXPOSE 8000
+# EXPOSE 8000
 
-# Run the application.
-CMD gunicorn -w 4 -b 0.0.0.0 'main:app'
+# # Run the application.
+# ENTRYPOINT [ "gunicorn", "-w", "4", "-b", "0.0.0.0", "main:app"]
+
+HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1

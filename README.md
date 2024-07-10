@@ -1,4 +1,4 @@
 # Vocabulary List
 
 ### TODO
-- figure out what to do with manage.py
+- [setup](https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/)

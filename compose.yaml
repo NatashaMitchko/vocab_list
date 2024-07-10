@@ -18,11 +18,20 @@ services:
         - 8000:8000
       env_file:
         - ./.env.dev
-      # healthcheck:
-      #   test: curl --fail http://localhost:8000/ || exit 1
-      #   timeout: 30s
-      #   retries: 3
-      #   start_period: 60s
+      depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_flask
+      - POSTGRES_PASSWORD=hello_flask
+      - POSTGRES_DB=hello_flask_dev
+
+volumes:
+  postgres_data:
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

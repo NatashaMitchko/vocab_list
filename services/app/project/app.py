@@ -1,26 +1,24 @@
 from flask import Flask
-from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 
-from project.resources.book import Book
-from project.resources.word import Word
-from project.resources.user import User
+def create_app(config_filename):
+    app = Flask(__name__)
+    app.config.from_object(config_filename)
+    
+    from project.database.model import db
+    db.init_app(app)
 
-app = Flask(__name__)
-app.config.from_object("project.config.Config")
+    from project.blueprints.user.routes import user_bp
+    app.register_blueprint(user_bp, url_prefix='/user')
 
-db = SQLAlchemy(app)
+    from project.blueprints.auth.routes import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    
+    return app
 
-api = Api(app)
 
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
-
-api.add_resource(HelloWorld, '/')
-api.add_resource(Word, '/word/<string:word>')
-api.add_resource(Book, '/book/<string:ISBN>')
-api.add_resource(User, '/user/<string:username>')
+app = create_app('project.config.Config')
 
 if __name__ == '__main__':
     app.run(debug=True)
+    print(f'HELLO HELLO KEY: {app.config["SECRET_KEY"]}')

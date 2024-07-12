@@ -1,7 +1,7 @@
 import bcrypt
 from flask import request
 from flask_restful import Resource
-from project.database.user import get_user, normalize_username, normalize_email, validate_email
+# from project.database.user import get_user, normalize_username, normalize_email, validate_email
 
 
 class User(Resource):
@@ -9,18 +9,19 @@ class User(Resource):
         return {'book': f'{user}'}
 
     def post(self):
-        username = normalize_username(request.form.get('username'))
-        if username == '':
-            return 400 # cant be empty
+        # username = normalize_username(request.form.get('username'))
+        # if username == '':
+        #     return 400 # cant be empty
 
-        email = normalize_email(request.form.get('email'))
-        errors = validate_email(email)
-        if errors:
-            return 400
+        # email = normalize_email(request.form.get('email'))
+        # errors = validate_email(email)
+        # if errors:
+        #     return 400
 
-        get_user(username=username, email=email)
+        # get_user(username=username, email=email)
 
-        password = bcrypt.generate_password_hash(request.form.get('password'))
+        # password = bcrypt.generate_password_hash(request.form.get('password'))
+        pass
 
 
 

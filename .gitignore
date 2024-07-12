@@ -1,2 +1,4 @@
 env/
 *secret*
+.env.prod
+.env.prod.db

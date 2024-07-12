@@ -1,4 +1,4 @@
-from model import User
+from project.database.model import User
 from sqlalchemy import or_
 
 def get_user(username='', email=''):
@@ -17,5 +17,3 @@ def validate_email(email):
         errors.append("Email cannot be empty")
     
     return errors
-
-    

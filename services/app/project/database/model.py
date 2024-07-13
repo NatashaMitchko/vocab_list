@@ -5,7 +5,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     username = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
@@ -15,7 +15,7 @@ class User(db.Model):
 class Book(db.Model):
     __tablename__ = "books"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     title = db.Column(db.String(128), unique=False, nullable=False)
     author = db.Column(db.String(128), unique=False, nullable=False)
     isbn = db.Column(db.String(128), unique=True, nullable=False)
@@ -24,7 +24,7 @@ class Book(db.Model):
 class Word(db.Model):
     __tablename__ = "words"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     word = db.Column(db.String(128), nullable=False)
     part_of_speech = db.Column(db.String(128), nullable=False)
     definition_primary = db.Column(db.String(128), nullable=False)
@@ -37,7 +37,7 @@ class List(db.Model):
         db.UniqueConstraint("user_id", "book_id", "title", postgresql_nulls_not_distinct=True),
       )
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     book_id = db.Column(db.Integer, db.ForeignKey("books.id"), nullable=True)
     title = db.Column(db.String(128), nullable=True)
@@ -49,7 +49,7 @@ class ListWord(db.Model):
         db.UniqueConstraint("list_id", "word_id"),
       )
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     list_id = db.Column(db.Integer, db.ForeignKey("lists.id"))
     word_id = db.Column(db.Integer, db.ForeignKey("words.id"))
 
@@ -62,26 +62,26 @@ def _create_all():
     db.session.commit()
 
 def _seed_all():
-    user_1 = User(id=1, username="Natasha", password="test", email="a@b.com")
-    user_2 = User(id=2, username="Nick", password="test", email="c@d.org")
-    user_3 = User(id=3, username="Alex", password="test", email="e@f.gov")
+    user_1 = User(username="Natasha", password="test", email="a@b.com")
+    user_2 = User(username="Nick", password="test", email="c@d.org")
+    user_3 = User(username="Alex", password="test", email="e@f.gov")
 
-    book_1 = Book(id=1, title="Goodnight, Moon", author="me", isbn="1234")
+    book_1 = Book(title="Goodnight, Moon", author="me", isbn="1234")
 
-    word_1 = Word(id=1, word="dog", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_2 = Word(id=2, word="cat", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_3 = Word(id=3, word="chicken", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_4 = Word(id=4, word="cow", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_5 = Word(id=5, word="pig", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_6 = Word(id=6, word="camel", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_1 = Word(word="dog", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_2 = Word(word="cat", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_3 = Word(word="chicken", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_4 = Word(word="cow", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_5 = Word(word="pig", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_6 = Word(word="camel", part_of_speech="noun", definition_primary="", definition_secondary="")
 
 
-    list_1 = List(id=1, user_id=1, book_id=1, title="first vocab list")
-    list_2 = List(id=2, user_id=1, book_id=1)
+    list_1 = List(user_id=1, book_id=1, title="first vocab list")
+    list_2 = List(user_id=1, book_id=1)
 
-    list_3 = List(id=3, user_id=2, title="random words")
+    list_3 = List(user_id=2, title="random words")
     
-    list_4 = List(id=4, user_id=3)
+    list_4 = List(user_id=3)
 
     listword_1 = ListWord(list_id=1, word_id=1)
     listword_2 = ListWord(list_id=1, word_id=2)

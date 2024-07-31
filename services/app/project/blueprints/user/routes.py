@@ -1,6 +1,6 @@
 import project.database.user as user
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 
 # Defining a blueprint
 user_bp = Blueprint(
@@ -11,7 +11,7 @@ user_bp = Blueprint(
 
 @user_bp.route('', methods=['POST'])
 def new_user():
-    request
+    # request
     return jsonify({'hi': 'you'})
 
 

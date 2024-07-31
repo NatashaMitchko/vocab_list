@@ -2,6 +2,13 @@ import project.database.user as user
 
 import bcrypt
 from flask import Blueprint, session, request, abort, jsonify, redirect, url_for
+from flask_login import LoginManager
+
+login_manager = LoginManager()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return user.get(user_id)
 
 # Defining a blueprint
 auth_bp = Blueprint(
@@ -22,7 +29,7 @@ def index():
     return 'You are not logged in'
 
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -35,17 +42,10 @@ def login():
             return redirect(url_for('auth_bp.index'))
         
         else:
-            return jsonify({'login_status': 'failed attempt'})
+            return {'login_status': 'failed attempt'}
 
-    return '''
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=text name=password>
-            <p><input type=submit value=Login>
-        </form>
-    '''
 
-@auth_bp.route('/register', methods=['GET', 'POST'])
+@auth_bp.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -63,16 +63,9 @@ def register():
         new_user = user.new_user(username, email, string_password)
         session['username'] = new_user.username
     
-    return '''
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=text name=email>
-            <p><input type=text name=password>
-            <p><input type=submit value=Register>
-        </form>
-    '''
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)

@@ -1,8 +1,10 @@
 import project.database.user as user
 
+import sys
+
 import bcrypt
 from flask import Blueprint, session, request, abort, jsonify, redirect, url_for
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 login_manager = LoginManager()
 
@@ -24,8 +26,8 @@ def bad_request(e):
 
 @auth_bp.route('/')
 def index():
-    if 'username' in session:
-        return f'Logged in as {session["username"]}'
+    if current_user:
+        return current_user.__dict__
     return 'You are not logged in'
 
 
@@ -35,12 +37,29 @@ def login():
         username = request.form.get('username')
         password_attempt = request.form.get('password')
 
-        u = user.get_user(username=username)
+        print(username, file=sys.stdout)
+        print(password_attempt, file=sys.stdout)
 
-        if _verify_password(password_attempt, u.password):
-            session['username'] = username
-            return redirect(url_for('auth_bp.index'))
+        # u = user.get_user(username=username) get password here
+        result = user.get_user_by_username(username)
+        print(result, file=sys.stdout)
+        if not result:
+            # user doesnt exist
+            return {'status': 'user doesnt exist'}
         
+        saved_pw = user.get_password_by_id(result.id)
+        print(f"TYPE: {type(saved_pw)}", file=sys.stdout)
+        print(f"VAL: {saved_pw}", file=sys.stdout)
+
+
+        if _verify_password(password_attempt, saved_pw[0]):
+            logged_in_user = result
+            logged_in_user.is_authenticated = True
+            if login_user(logged_in_user):
+                # disrespect redirect in next 
+                # https://flask-login.readthedocs.io/en/0.6.3/#login-example
+                # https://web.archive.org/web/20120517003641/http://flask.pocoo.org/snippets/62/
+                return redirect(url_for('auth_bp.index'))
         else:
             return {'login_status': 'failed attempt'}
 
@@ -51,8 +70,8 @@ def register():
         username = request.form.get('username')
         email = request.form.get('email')
 
-        u1 = user.get_user(username=username)
-        u2 = user.get_user(email=email)
+        u1 = user.get_user_by_username(username=username)
+        u2 = user.get_user_by_username(email=email)
         if u1 is not None:
             abort(400, description="Username taken")
         if u2 is not None:
@@ -67,9 +86,7 @@ def register():
 @auth_bp.route('/logout')
 @login_required
 def logout():
-    # remove the username from the session if it's there
-    session.pop('username', None)
-    session.pop('active', None)
+    logout_user()
     return redirect(url_for('auth_bp.index'))
 
 

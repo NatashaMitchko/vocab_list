@@ -20,10 +20,10 @@ def generate_verification_email():
 
 @user_bp.route('/<username>')
 def get_user_by_username(username):
-    u = user.get_user(username=username)
+    u = user.get_user_by_username(username=username)
     if not u:
         return jsonify({})
-    return jsonify({'id': u.id, 'username': u.username, 'email': u.email})
+    return jsonify(u.__dict__)
 
 def normalize():
     pass

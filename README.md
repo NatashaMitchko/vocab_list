@@ -1,6 +1,9 @@
 # Vocabulary List
 
 next:
+- FIX: seed_data pws have invalid salt value - come up with better way to seed
+    - https://stackoverflow.com/questions/34548846/flask-bcrypt-valueerror-invalid-salt
+
 - complete login/register 
     - using flask login manager, config of login mgmt in auth routes file - maybe move it to it's own file under auth dir
 - ORM to Domain object conversion layer
@@ -16,7 +19,15 @@ docker compose up --build --remove-orphans
 docker-compose -f compose.prod.yaml up -d --build
 docker-compose down -v
 
+```
+docker exec -it <container> bash
+```
 
+```
+docker-compose exec db psql --username=hello_flask --dbname=hello_flask_dev
+```
 stuff:
+
+https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/
 
 - gnuicorn auto runs on 8000 regardless of compose.yaml (e.g. 5001:5000)

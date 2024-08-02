@@ -1,18 +1,33 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import ENUM as pgEnum
+from enum import Enum, unique
 
 db = SQLAlchemy()
 
-class User(db.Model):
+@unique
+class UserStatus(Enum):
+    # pending, active, suspended, banned, inactive
+    pending = "PENDING"
+    active = "ACTIVE"
+    inactive = "INACTIVE"
+    suspended = "SUSPENDED"
+    banned = "BANNED"
+
+class UserTier(Enum):
+    admin = "ADMIN"
+    regular = "REGULAR"
+
+class UserORM(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     username = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)
-    email_validated = db.Column(db.Boolean, nullable=False, default=False)
+    status = db.Column(pgEnum(UserStatus), nullable=False)
+    tier = db.Column(pgEnum(UserTier), nullable=False)
 
-
-class Book(db.Model):
+class BookORM(db.Model):
     __tablename__ = "books"
 
     id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
@@ -21,7 +36,7 @@ class Book(db.Model):
     isbn = db.Column(db.String(128), unique=True, nullable=False)
 
 
-class Word(db.Model):
+class WordORM(db.Model):
     __tablename__ = "words"
 
     id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
@@ -31,7 +46,7 @@ class Word(db.Model):
     definition_secondary = db.Column(db.String(128), nullable=True)
 
 
-class List(db.Model):
+class ListORM(db.Model):
     __tablename__ = "lists"
     __table_args__ = (
         db.UniqueConstraint("user_id", "book_id", "title", postgresql_nulls_not_distinct=True),
@@ -43,7 +58,7 @@ class List(db.Model):
     title = db.Column(db.String(128), nullable=True)
 
 
-class ListWord(db.Model):
+class ListWordORM(db.Model):
     __tablename__ = "list_words"
     __table_args__ = (
         db.UniqueConstraint("list_id", "word_id"),
@@ -53,8 +68,8 @@ class ListWord(db.Model):
     list_id = db.Column(db.Integer, db.ForeignKey("lists.id"))
     word_id = db.Column(db.Integer, db.ForeignKey("words.id"))
 
-    list = db.relationship("List", backref="list_words")
-    word = db.relationship("Word", backref="list_words")
+    list = db.relationship("ListORM", backref="list_words")
+    word = db.relationship("WordORM", backref="list_words")
 
 def _create_all():
     db.drop_all()
@@ -62,36 +77,36 @@ def _create_all():
     db.session.commit()
 
 def _seed_all():
-    user_1 = User(username="Natasha", password="test", email="a@b.com")
-    user_2 = User(username="Nick", password="test", email="c@d.org")
-    user_3 = User(username="Alex", password="test", email="e@f.gov")
+    user_1 = UserORM(username="Natasha", status=UserStatus.active, tier=UserTier.admin, password="test", email="a@b.com")
+    user_2 = UserORM(username="Nick", status=UserStatus.active, tier=UserTier.regular, password="test", email="c@d.org")
+    user_3 = UserORM(username="Alex", status=UserStatus.active, tier=UserTier.regular, password="test", email="e@f.gov")
 
-    book_1 = Book(title="Goodnight, Moon", author="me", isbn="1234")
+    book_1 = BookORM(title="Goodnight, Moon", author="me", isbn="1234")
 
-    word_1 = Word(word="dog", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_2 = Word(word="cat", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_3 = Word(word="chicken", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_4 = Word(word="cow", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_5 = Word(word="pig", part_of_speech="noun", definition_primary="", definition_secondary="")
-    word_6 = Word(word="camel", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_1 = WordORM(word="dog", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_2 = WordORM(word="cat", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_3 = WordORM(word="chicken", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_4 = WordORM(word="cow", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_5 = WordORM(word="pig", part_of_speech="noun", definition_primary="", definition_secondary="")
+    word_6 = WordORM(word="camel", part_of_speech="noun", definition_primary="", definition_secondary="")
 
 
-    list_1 = List(user_id=1, book_id=1, title="first vocab list")
-    list_2 = List(user_id=1, book_id=1)
+    list_1 = ListORM(user_id=1, book_id=1, title="first vocab list")
+    list_2 = ListORM(user_id=1, book_id=1)
 
-    list_3 = List(user_id=2, title="random words")
+    list_3 = ListORM(user_id=2, title="random words")
     
-    list_4 = List(user_id=3)
+    list_4 = ListORM(user_id=3)
 
-    listword_1 = ListWord(list_id=1, word_id=1)
-    listword_2 = ListWord(list_id=1, word_id=2)
-    listword_3 = ListWord(list_id=1, word_id=3)
-    listword_4 = ListWord(list_id=2, word_id=3)
+    listword_1 = ListWordORM(list_id=1, word_id=1)
+    listword_2 = ListWordORM(list_id=1, word_id=2)
+    listword_3 = ListWordORM(list_id=1, word_id=3)
+    listword_4 = ListWordORM(list_id=2, word_id=3)
 
-    listword_5 = ListWord(list_id=3, word_id=4)
-    listword_6 = ListWord(list_id=3, word_id=5)
+    listword_5 = ListWordORM(list_id=3, word_id=4)
+    listword_6 = ListWordORM(list_id=3, word_id=5)
 
-    listword_7 = ListWord(list_id=4, word_id=6)
+    listword_7 = ListWordORM(list_id=4, word_id=6)
 
     db.session.add_all([
         user_1, user_2, user_3,

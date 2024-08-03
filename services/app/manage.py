@@ -6,13 +6,13 @@ cli = FlaskGroup(app)
 
 @cli.command("create_db")
 def create_db():
-    from project.database import model
-    model._create_all()
+    from project.database import seed
+    seed._create_all()
 
 @cli.command("seed_db")
 def seed_db():
-    from project.database import model
-    model._seed_all()
+    from project.database import seed
+    seed._seed_all()
 
 @cli.command("list_routes")
 def list_routes():

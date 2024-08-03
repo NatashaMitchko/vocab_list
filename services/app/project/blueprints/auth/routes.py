@@ -37,31 +37,27 @@ def login():
         username = request.form.get('username')
         password_attempt = request.form.get('password')
 
-        print(username, file=sys.stdout)
-        print(password_attempt, file=sys.stdout)
-
         # u = user.get_user(username=username) get password here
         result = user.get_user_by_username(username)
-        print(result, file=sys.stdout)
         if not result:
             # user doesnt exist
             return {'status': 'user doesnt exist'}
         
         saved_pw = user.get_password_by_id(result.id)
-        print(f"TYPE: {type(saved_pw)}", file=sys.stdout)
-        print(f"VAL: {saved_pw}", file=sys.stdout)
-
 
         if _verify_password(password_attempt, saved_pw[0]):
             logged_in_user = result
             logged_in_user.is_authenticated = True
+            print("LOGGED IN SUCCESS", file=sys.stdout)
             if login_user(logged_in_user):
                 # disrespect redirect in next 
                 # https://flask-login.readthedocs.io/en/0.6.3/#login-example
                 # https://web.archive.org/web/20120517003641/http://flask.pocoo.org/snippets/62/
                 return redirect(url_for('auth_bp.index'))
+            return {'hi':'why did this not work'}
         else:
             return {'login_status': 'failed attempt'}
+    return {'message': 500}
 
 
 @auth_bp.route('/register', methods=['POST'])
@@ -77,7 +73,7 @@ def register():
         if u2 is not None:
             abort(400, description="Email already in use")
         
-        string_password = _get_password_hash(request.form.get('password'))
+        string_password = user.get_password_hash(request.form.get('password'))
 
         new_user = user.new_user(username, email, string_password)
         session['username'] = new_user.username
@@ -88,14 +84,6 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('auth_bp.index'))
-
-
-def _get_password_hash(password) -> str:
-    pwd_bytes = password.encode('utf-8')
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password=pwd_bytes, salt=salt)
-    string_password = hashed_password.decode('utf8')
-    return string_password
 
 
 def _verify_password(plain_password, hashed_password) -> bool:

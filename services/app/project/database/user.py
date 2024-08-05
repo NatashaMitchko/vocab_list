@@ -35,10 +35,6 @@ def get_user_by_id(id) -> User:
     return User(u.id, u.username, u.email, u.status, u.tier)
 
 
-def get_user_by_email(email) -> User:
-    pass
-
-
 def get_password_by_id(id):
     u = db.session.query(UserORM.password).filter(UserORM.id == id).first()
     return u

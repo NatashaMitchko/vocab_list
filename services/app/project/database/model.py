@@ -13,17 +13,11 @@ class UserStatus(Enum):
     suspended = "SUSPENDED"
     banned = "BANNED"
 
-    def __repr__(self):
-        return f"{str.upper(self.name)}"
-
 
 @unique
 class UserTier(Enum):
     admin = "ADMIN"
     regular = "REGULAR"
-
-    def __repr__(self):
-        return f"{str.upper(self.name)}"
 
 
 class UserORM(db.Model):

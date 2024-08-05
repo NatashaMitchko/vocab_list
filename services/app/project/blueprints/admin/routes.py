@@ -7,6 +7,8 @@ admin_bp = Blueprint(
     "admin_bp", __name__, template_folder="templates", static_folder="static"
 )
 
+# eventually have an index with dashboard w many tables
+
 # Take actions for users - suspend, bulk suspend
 # see how many lists
 # see top words across users

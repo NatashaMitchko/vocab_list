@@ -31,6 +31,13 @@ docker exec -it <container> bash
 ```
 docker-compose exec db psql --username=hello_flask --dbname=hello_flask_dev
 ```
+
+app secret
+https://flask.palletsprojects.com/en/2.3.x/config/#SECRET_KEY
+```
+python -c 'import secrets; print(secrets.token_hex())'
+```
+
 stuff:
 
 https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/

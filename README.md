@@ -1,6 +1,8 @@
 # Vocabulary List
 
 next:
+- RBAC https://pythonhosted.org/Flask-Principal/
+- autorestart on change
 - autoformat on commit w/ black
 
 - https://blog.miguelgrinberg.com/post/restful-authentication-with-flask 

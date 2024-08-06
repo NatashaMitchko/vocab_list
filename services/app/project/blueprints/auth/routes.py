@@ -3,7 +3,7 @@ import project.database.user as user
 import sys
 
 import bcrypt
-from flask import Blueprint, session, request, abort, jsonify, redirect, url_for
+from flask import Blueprint, session, request, abort, jsonify, redirect, url_for, render_template
 from flask_login import (
     LoginManager,
     login_user,
@@ -11,13 +11,14 @@ from flask_login import (
     logout_user,
     current_user,
 )
+# from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed
 
 login_manager = LoginManager()
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return user.get(user_id)
+    return user.get_user_by_id(user_id)
 
 
 # Defining a blueprint
@@ -34,11 +35,12 @@ def bad_request(e):
 @auth_bp.route("/")
 def index():
     if current_user:
-        return current_user.__dict__
+        print(current_user.__dict__, file=sys.stdout)
+        return render_template("index.html", current_user=current_user)
     return "You are not logged in"
 
 
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username")
@@ -57,14 +59,15 @@ def login():
             logged_in_user.is_authenticated = True
             print("LOGGED IN SUCCESS", file=sys.stdout)
             if login_user(logged_in_user):
-                # disrespect redirect in next
                 # https://flask-login.readthedocs.io/en/0.6.3/#login-example
                 # https://web.archive.org/web/20120517003641/http://flask.pocoo.org/snippets/62/
-                return redirect(url_for("index.html"))
+                # TODO: check if next is safe here
+                target = request.args.get('next')
+                return redirect(target or url_for("auth_bp.index"))
             return {"hi": "why did this not work"}
         else:
             return {"login_status": "failed attempt"}
-    return {"message": 500}
+    return render_template("login.html")
 
 
 @auth_bp.route("/register", methods=["POST"])

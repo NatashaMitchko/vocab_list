@@ -7,6 +7,7 @@ def create_app(config_filename):
 
     from project.database.model import db
 
+    db.app = app
     db.init_app(app)
 
     from project.blueprints.user.routes import user_bp

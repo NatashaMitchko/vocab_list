@@ -64,7 +64,7 @@ def login():
                 # TODO: check if next is safe here
                 target = request.args.get('next')
                 return redirect(target or url_for("auth_bp.index"))
-            return {"hi": "why did this not work"}
+            return {"hi": "why did this not work??   "}
         else:
             return {"login_status": "failed attempt"}
     return render_template("login.html")

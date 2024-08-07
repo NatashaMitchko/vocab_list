@@ -1,11 +1,30 @@
-from flask import Blueprint, render_template
-
+from flask import Blueprint, render_template, request, redirect, url_for
+from functools import wraps
 import project.database.user as user
+from project.database.model import UserTier
+
+from project.blueprints.auth.routes import login_required
+
+
+from flask_login import current_user
 
 # Defining a blueprint
 admin_bp = Blueprint(
     "admin_bp", __name__, template_folder="templates", static_folder="static"
 )
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user is None:
+            return redirect(url_for("/auth/login", next=request.url))
+        elif current_user.tier != UserTier.admin:
+            return redirect(url_for("/", next=request.url))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
 
 # eventually have an index with dashboard w many tables
 
@@ -14,7 +33,9 @@ admin_bp = Blueprint(
 # see top words across users
 
 
-@admin_bp.route("/users")
-def get_users():
+@admin_bp.route("/")
+@login_required
+@admin_required
+def dashboard():
     users = user.get_all_users()
-    return render_template("users.html", users=users)
+    return render_template("admin.html", title="Admin Dashboard", users=users)

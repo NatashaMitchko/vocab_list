@@ -1,7 +1,5 @@
 import project.database.user as user
 
-import sys
-
 import bcrypt
 from flask import Blueprint, session, request, abort, jsonify, redirect, url_for, render_template
 from flask_login import (
@@ -11,7 +9,6 @@ from flask_login import (
     logout_user,
     current_user,
 )
-# from flask.ext.principal import Principal, Identity, AnonymousIdentity, identity_changed
 
 login_manager = LoginManager()
 
@@ -34,10 +31,7 @@ def bad_request(e):
 
 @auth_bp.route("/")
 def index():
-    if current_user:
-        print(current_user.__dict__, file=sys.stdout)
-        return render_template("index.html", current_user=current_user)
-    return "You are not logged in"
+    return render_template("index.html", title="Home", current_user=current_user)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -56,8 +50,6 @@ def login():
 
         if _verify_password(password_attempt, saved_pw[0]):
             logged_in_user = result
-            logged_in_user.is_authenticated = True
-            print("LOGGED IN SUCCESS", file=sys.stdout)
             if login_user(logged_in_user):
                 # https://flask-login.readthedocs.io/en/0.6.3/#login-example
                 # https://web.archive.org/web/20120517003641/http://flask.pocoo.org/snippets/62/
@@ -67,7 +59,7 @@ def login():
             return {"hi": "why did this not work??   "}
         else:
             return {"login_status": "failed attempt"}
-    return render_template("login.html")
+    return render_template("login.html", title="Login")
 
 
 @auth_bp.route("/register", methods=["POST"])

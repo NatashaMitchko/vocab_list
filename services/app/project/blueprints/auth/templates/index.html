@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hello, {{current_user.username}}!</h1>
+
+{% if current_user %}
+    <h1>Hello, {{current_user.username}}! You are authenticated: {{current_user.is_authenticated}}</h1>
+    <button><a href="/auth/logout">Log Out</a></button>
+{% else %}
+    <h1>Not Logged In</h1>
+    <button><a href="/auth/login">Log In</a></button>
+    <button><a href="/auth/register">Register</a></button>
+{% endif %}
+
 {% endblock %}

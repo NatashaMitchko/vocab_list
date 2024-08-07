@@ -1,4 +1,4 @@
-from project.database.model import db, UserORM, UserStatus
+from project.database.model import db, UserORM
 import bcrypt
 
 
@@ -9,16 +9,17 @@ class User:
         self.email = email
         self.status = status
         self.tier = tier
-        self.is_authenticated = False
 
     def get_id(self) -> str:
         return self.id
 
     @property
     def is_active(self):
-        if self.status == UserStatus.active:
-            return True
-        return False
+        return True
+
+    @property
+    def is_authenticated(self):
+        return True
 
     @property
     def is_anonymous(self):

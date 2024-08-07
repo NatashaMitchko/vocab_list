@@ -2,17 +2,15 @@
 
 next:
 - RBAC https://pythonhosted.org/Flask-Principal/
-- autorestart on change
-- autoformat on commit w/ black
 
 - https://blog.miguelgrinberg.com/post/restful-authentication-with-flask 
-
 
 - done: seed_data pws have invalid salt value - come up with better way to seed
     - https://stackoverflow.com/questions/34548846/flask-bcrypt-valueerror-invalid-salt
 
 - complete login/register 
     - using flask login manager, config of login mgmt in auth routes file - maybe move it to it's own file under auth dir
+
 - ORM to Domain object conversion layer
 
 - figure out how to connect react (attn to sessions)

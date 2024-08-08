@@ -78,7 +78,7 @@ def login():
     return render_template("login.html", title="Login")
 
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form.get("username")
@@ -86,12 +86,10 @@ def register():
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
 
-        u1 = user.get_user_by_username(username=username)
-        u2 = user.get_user_by_username(email=email)
         errors = []
-        if u1 is not None:
+        if user.username_in_use(username):
             errors.append(USERNAME_TAKEN)
-        if u2 is not None:
+        if user.email_in_use(email):
             errors.append(EMAIL_IN_USE)
         if password != confirm_password:
             errors.append(PASSWORD_MATCH)

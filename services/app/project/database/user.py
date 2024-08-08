@@ -63,11 +63,19 @@ def new_user(username, email, password):
 
 
 def normalize_username(raw_username):
-    return raw_username.lower().strip()
+    return raw_username.strip()
 
 
 def normalize_email(raw_email):
     return raw_email.lower().strip()
+
+
+def username_in_use(username) -> bool:
+    username = normalize_username(username)
+    db_username = db.session.query(UserORM.username).filter(UserORM.username==username).first()
+    if db_username:
+        return True
+    return False
 
 
 def email_in_use(email) -> bool:

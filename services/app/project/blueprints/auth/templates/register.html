@@ -7,13 +7,15 @@
         <label for="password">Password</label>
         <input type="password" name="password" required>
         <label for="confirm_password">Confirm Password</label>
-        <input type="password" name="password" required>
+        <input type="password" name="confirm_password" required>
         <label for="email">Email</label>
         <input type="email" name="email" required>
         <input type="submit" value="Register">
     </form>
     <a href="/auth/login">Log In</a>
-    {% if error %}
-    <p style="color:red">{{ error }}</p>
+    {% if errors %}
+        {% for error in errors %}
+            <p style="color:red">{{ error }}</p>
+        {% endfor %}
     {% endif %}
 {% endblock %}

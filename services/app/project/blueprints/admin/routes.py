@@ -18,9 +18,10 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_user is None:
-            return redirect(url_for("/auth/login", next=request.url))
+            return redirect(url_for("auth_bp.login", next=request.url))
         elif current_user.tier != UserTier.admin:
-            return redirect(url_for("/", next=request.url))
+            # TODO: Create Home Page to redirect for
+            return redirect(url_for("auth_bp.index", next=request.url))
         return f(*args, **kwargs)
 
     return decorated_function

@@ -11,7 +11,7 @@ services:
   server:
       build: 
         context: .
-      command: gunicorn --reload -w 1 -b 0.0.0.0 project.app:app
+      command: python3 -m flask --app project.app:app run --debug --host=0.0.0.0 --port=8000 # gunicorn --reload -w 1 -b 0.0.0.0 project.app:app
       volumes:
         - ./services/app/:/usr/src/app/
       ports:

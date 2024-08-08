@@ -1,7 +1,16 @@
 import project.database.user as user
 
 import bcrypt
-from flask import Blueprint, session, request, abort, jsonify, redirect, url_for, render_template
+from flask import (
+    Blueprint,
+    session,
+    request,
+    abort,
+    jsonify,
+    redirect,
+    url_for,
+    render_template,
+)
 from flask_login import (
     LoginManager,
     login_user,
@@ -11,6 +20,13 @@ from flask_login import (
 )
 
 login_manager = LoginManager()
+
+# LOGIN/REGISTER MESSAGING
+INVALID = "Invalid credentials."
+USERNAME_TAKEN = "Username already taken."
+EMAIL_IN_USE = "Email already in use."
+PASSWORD_MATCH = "Passwords don't match."
+UNKNOWN_ERROR = "Something went wrong, please try again."
 
 
 @login_manager.user_loader
@@ -44,7 +60,7 @@ def login():
         result = user.get_user_by_username(username)
         if not result:
             # user doesnt exist
-            return {"status": "user doesnt exist"}
+            return render_template("login.html", title="Login", error=INVALID)
 
         saved_pw = user.get_password_by_id(result.id)
 
@@ -54,11 +70,11 @@ def login():
                 # https://flask-login.readthedocs.io/en/0.6.3/#login-example
                 # https://web.archive.org/web/20120517003641/http://flask.pocoo.org/snippets/62/
                 # TODO: check if next is safe here
-                target = request.args.get('next')
+                target = request.args.get("next")
                 return redirect(target or url_for("auth_bp.index"))
-            return {"hi": "why did this not work??   "}
+            return {"hi": "inactive user account"}
         else:
-            return {"login_status": "failed attempt"}
+            return render_template("login.html", title="Login", error=INVALID)
     return render_template("login.html", title="Login")
 
 
@@ -67,18 +83,32 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
 
         u1 = user.get_user_by_username(username=username)
         u2 = user.get_user_by_username(email=email)
+        errors = []
         if u1 is not None:
-            abort(400, description="Username taken")
+            errors.append(USERNAME_TAKEN)
         if u2 is not None:
-            abort(400, description="Email already in use")
+            errors.append(EMAIL_IN_USE)
+        if password != confirm_password:
+            errors.append(PASSWORD_MATCH)
 
-        string_password = user.get_password_hash(request.form.get("password"))
+        if errors:
+            return render_template("register.html", errors=errors)
 
+        string_password = user.get_password_hash(password)
         new_user = user.new_user(username, email, string_password)
-        session["username"] = new_user.username
+
+        if login_user(new_user):
+            # TODO: check if next is safe here
+            target = request.args.get("next")
+            return redirect(target or url_for("auth_bp.index"))
+        return render_template("register.html", errors=[UNKNOWN_ERROR])
+
+    return render_template("register.html")
 
 
 @auth_bp.route("/logout")

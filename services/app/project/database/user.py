@@ -1,4 +1,4 @@
-from project.database.model import db, UserORM
+from project.database.model import db, UserORM, UserStatus, UserTier
 import bcrypt
 
 
@@ -27,12 +27,12 @@ class User:
 
 
 def get_user_by_username(username) -> User:
-    u = UserORM.query.filter(UserORM.username == username).first()
+    u = db.session.query(UserORM).filter(UserORM.username == username).first()
     return User(u.id, u.username, u.email, u.status, u.tier)
 
 
 def get_user_by_id(id) -> User:
-    u = UserORM.query.filter(UserORM.id == id).first()
+    u = db.session.query(UserORM).filter(UserORM.id == id).first()
     return User(u.id, u.username, u.email, u.status, u.tier)
 
 
@@ -50,10 +50,16 @@ def get_password_hash(password) -> str:
 
 
 def new_user(username, email, password):
-    new_user = UserORM(username=username, password=password, email=email)
+    new_user = UserORM(
+        username=username,
+        password=password,
+        email=email,
+        status=UserStatus.active,
+        tier=UserTier.regular
+    )
     db.session.add(new_user)
     db.session.commit()
-    return UserORM.query.filter(UserORM.username == username).first()
+    return get_user_by_username(username=username)
 
 
 def normalize_username(raw_username):
@@ -62,6 +68,15 @@ def normalize_username(raw_username):
 
 def normalize_email(raw_email):
     return raw_email.lower().strip()
+
+
+def email_in_use(email) -> bool:
+    email = normalize_email(email)
+    db_email = db.session.query(UserORM.email).filter(UserORM.email==email).first()
+    if db_email:
+        return True
+    return False
+
 
 
 def validate_email(email):

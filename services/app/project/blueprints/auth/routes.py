@@ -3,9 +3,7 @@ import project.database.user as user
 import bcrypt
 from flask import (
     Blueprint,
-    session,
     request,
-    abort,
     jsonify,
     redirect,
     url_for,

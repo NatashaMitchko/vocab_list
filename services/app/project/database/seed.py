@@ -1,3 +1,8 @@
+import csv
+from random import random
+
+from faker import Faker
+
 from project.database.model import *
 from project.database.user import get_password_hash
 
@@ -5,6 +10,56 @@ from project.database.user import get_password_hash
 def _create_all():
     db.drop_all()
     db.create_all()
+    db.session.commit()
+
+def generate_users(n):
+    faker = Faker()
+    """Generate fake users."""
+    for _ in range(n):
+        user = UserORM(
+            name=faker.name(),
+            email=faker.email(),
+            password=get_password_hash(faker.password()),
+            status=UserStatus.active,
+            tier=UserTier.admin
+        )
+        db.session.add(user)
+    db.session.commit()
+
+def generate_books(n):
+    faker = Faker()
+    for _ in range(n):
+        book = BookORM(
+            title=faker.sentence(nb_words=4, variable_nb_words=True).title(),
+            author=faker.name,
+            isbn=faker.isbn10
+        )
+        db.session.add(book)
+    db.session.commit()
+
+
+def extract_vocab(desired_num_results):
+    vocab_list = "/Users/natashamitchko/src/vocab_list/services/vocab_csv_dev/words.csv"
+    with open(vocab_list, 'r') as fp:
+        total_entries = len(fp.readlines()) - 1
+
+    chances_selected = desired_num_results / total_entries
+
+    result = []
+    for line in csv.reader(vocab_list):
+        if random() < chances_selected:
+            result.append((line[0], line[8], line[9]))
+            if len(result) == desired_num_results:
+                return result
+    
+def generate_words(n):
+    words = extract_vocab(n)
+    for w in words:
+        db.session.add(WordORM(
+            word=w[0],
+            part_of_speech=w[1],
+            definition_primary=w[2]
+        ))
     db.session.commit()
 
 
@@ -17,60 +72,15 @@ def _seed_all():
         password=test_pw,
         email="a@b.com",
     )
-    user_2 = UserORM(
-        username="Nick",
-        status=UserStatus.active,
-        tier=UserTier.regular,
-        password=test_pw,
-        email="c@d.org",
-    )
-    user_3 = UserORM(
-        username="Alex",
-        status=UserStatus.active,
-        tier=UserTier.regular,
-        password=test_pw,
-        email="e@f.gov",
-    )
+    db.session.add(user_1)
+    db.session.commit()
 
-    book_1 = BookORM(title="Goodnight, Moon", author="me", isbn="1234")
+    generate_users(10)
+    generate_books(50)
+    generate_words(100)
 
-    word_1 = WordORM(
-        word="dog",
-        part_of_speech="noun",
-        definition_primary="",
-        definition_secondary="",
-    )
-    word_2 = WordORM(
-        word="cat",
-        part_of_speech="noun",
-        definition_primary="",
-        definition_secondary="",
-    )
-    word_3 = WordORM(
-        word="chicken",
-        part_of_speech="noun",
-        definition_primary="",
-        definition_secondary="",
-    )
-    word_4 = WordORM(
-        word="cow",
-        part_of_speech="noun",
-        definition_primary="",
-        definition_secondary="",
-    )
-    word_5 = WordORM(
-        word="pig",
-        part_of_speech="noun",
-        definition_primary="",
-        definition_secondary="",
-    )
-    word_6 = WordORM(
-        word="camel",
-        part_of_speech="noun",
-        definition_primary="",
-        definition_secondary="",
-    )
 
+    # Relations
     list_1 = ListORM(user_id=1, book_id=1, title="first vocab list")
     list_2 = ListORM(user_id=1, book_id=1)
 
@@ -87,34 +97,6 @@ def _seed_all():
     listword_6 = ListWordORM(list_id=3, word_id=5)
 
     listword_7 = ListWordORM(list_id=4, word_id=6)
-
-    db.session.add_all(
-        [
-            user_1,
-            user_2,
-            user_3,
-        ]
-    )
-    db.session.commit()
-
-    db.session.add_all(
-        [
-            book_1,
-        ]
-    )
-    db.session.commit()
-
-    db.session.add_all(
-        [
-            word_1,
-            word_2,
-            word_3,
-            word_4,
-            word_5,
-            word_6,
-        ]
-    )
-    db.session.commit()
 
     db.session.add_all(
         [

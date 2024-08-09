@@ -25,6 +25,7 @@ class User:
     def is_anonymous(self):
         return False
 
+# Auth Functions - Login/Register
 
 def get_user_by_username(username) -> User:
     u = db.session.query(UserORM).filter(UserORM.username == username).first()
@@ -86,7 +87,6 @@ def email_in_use(email) -> bool:
     return False
 
 
-
 def validate_email(email):
     errors = []
     if email == "":
@@ -94,9 +94,7 @@ def validate_email(email):
 
     return errors
 
+# User Content Functions
 
 # Admin functions
 
-
-def get_all_users():
-    return UserORM.query

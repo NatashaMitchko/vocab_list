@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from functools import wraps
-import project.database.user as user
+import project.database.admin as admin
 from project.database.model import UserTier
 
 from project.blueprints.auth.routes import login_required
@@ -38,5 +38,5 @@ def admin_required(f):
 @login_required
 @admin_required
 def dashboard():
-    users = user.get_all_users()
+    users = admin.get_all_users()
     return render_template("admin.html", title="Admin Dashboard", users=users)

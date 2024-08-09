@@ -2,3 +2,5 @@ env/
 *secret*
 .env.prod
 .env.prod.db
+devenv/
+services/vocab_csv_dev/

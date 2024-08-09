@@ -46,8 +46,8 @@ class WordORM(db.Model):
     id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     word = db.Column(db.String(128), nullable=False)
     part_of_speech = db.Column(db.String(128), nullable=False)
-    definition_primary = db.Column(db.String(128), nullable=False)
-    definition_secondary = db.Column(db.String(128), nullable=True)
+    definition_primary = db.Column(db.String(256), nullable=False)
+    definition_secondary = db.Column(db.String(256), nullable=True)
 
 
 class ListORM(db.Model):

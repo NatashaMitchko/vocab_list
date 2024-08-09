@@ -13,7 +13,6 @@ fi
 
 if [ "$FLASK_DEBUG" = "1" ]
 then
-    pip3 install -r $DEV_REQUIREMENTS
 
     echo "Creating the database tables..."
     python manage.py create_db

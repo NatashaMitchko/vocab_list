@@ -2,28 +2,33 @@
 
 {% block content %}
 
-Hello
+<h2>Your Lists</h2>
 
-<div>
-    <h2>Books</h2>
-</div>
-<div>
-    <h2>All Lists</h2>
-    id
-    title
-    user_id
-    book_id
-    <br>
-    {% for l in data["lists"] %}
-        {{l.id}}
-        {{l.title}}
-        {{l.user_id}}
-        {{l.book_id}}
-        <br>
-    {% endfor %}
-</div>
-<div>
-    <h2>All Words</h2>
-</div>
+<table id="vocabListsTable" class="display">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Book</th>
+            <th>No. of Words</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for l in data["lists"] %}
+        <tr>
+            <td><a href="/list/{{l.id}}">{{ l.title }}</a></td>
+            <td>{{ l.book_id }}</td>
+            <td>{{ l.num_words }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#vocabListsTable').DataTable();
+    });
+  </script>
 {% endblock %}

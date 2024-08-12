@@ -170,7 +170,7 @@ def _seed_all():
 
     # Relations
     list_1 = ListORM(user_id=1, book_id=1, title="first vocab list")
-    list_2 = ListORM(user_id=1, book_id=1)
+    list_2 = ListORM(user_id=1, book_id=1, title="New List, Who Dis?")
 
     list_3 = ListORM(user_id=2, title="random words")
 

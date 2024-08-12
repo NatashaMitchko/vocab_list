@@ -1,11 +1,13 @@
 # Vocabulary List
 
 next:
+- Need to create new list and book blueprints
+
 - RBAC https://pythonhosted.org/Flask-Principal/
 
 - https://blog.miguelgrinberg.com/post/restful-authentication-with-flask 
 
-- done: seed_data pws have invalid salt value - come up with better way to seed
+- DONE: seed_data pws have invalid salt value - come up with better way to seed
     - https://stackoverflow.com/questions/34548846/flask-bcrypt-valueerror-invalid-salt
 
 - complete login/register 

@@ -18,8 +18,5 @@ def index():
 @home_bp.route("/home")
 @login_required
 def home():
-    # lists
-    # books
-    # all vocab
     lists = user_content.get_lists_for_user(current_user.id)
     return render_template("user_home.html", title="Home", data={"lists": lists})

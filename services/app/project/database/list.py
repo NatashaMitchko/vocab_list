@@ -10,12 +10,12 @@ class Word:
 
 
 class VocabList:
-    def __init__(self, id: int, user_id: int, words: List[Word] = [], title = None, book_id = None) -> None:
+    def __init__(self, id: int, user_id: int, words: List[Word] = [], title = None, book_id = None, count = 0) -> None:
         self.id = id
         self.user_id = user_id
         self.title = title
         self.book_id = book_id
-        self.num_words = 0
+        self.num_words = count
 
         self.has_detail = False
 

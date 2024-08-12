@@ -2,7 +2,7 @@
 
 {% block content %}
   <button><a href="/auth/logout">Log Out</a></button>
-    <table id="data">
+    <table id="userData">
       <thead>
         <tr>
           <th>Id</th>
@@ -24,52 +24,13 @@
         {% endfor %}
       </tbody>
     </table>
-    <h2>Testing Stuff</h2>
-    <table id="data2">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>User Id</th>
-          <th>title</th>
-          <th>book id</th>
-          <th>num_words</th>
-          <th>words</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for l in data['words'] %}
-        <tr>
-          <td>{{ l.id }}</td>
-          <td>{{ l.user_id }}</td>
-          <td>{{ l.title }}</td>
-          <td>{{ l.book_id }}</td>
-          <td>{{ l.num_words }}</td>
-          <td>{{ l.words }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <h2>Words</h2>
-    <table id="data">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Tier</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-        <tr>
-          <td>{{ user.id }}</td>
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.status.name }}</td>
-          <td>{{ user.tier.name }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#userData').DataTable();
+    });
+  </script>
 {% endblock %}

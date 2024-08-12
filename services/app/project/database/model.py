@@ -63,6 +63,9 @@ class ListORM(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.id"), nullable=True)
     title = db.Column(db.String(128), nullable=True)
 
+    book = db.relationship("BookORM", backref="lists")
+    user = db.relationship("UserORM", backref="users")
+
 
 class ListWordORM(db.Model):
     __tablename__ = "list_words"

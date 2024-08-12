@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Hello
+
+<div>
+    <h2>Books</h2>
+</div>
+<div>
+    <h2>All Lists</h2>
+    id
+    title
+    user_id
+    book_id
+    <br>
+    {% for l in data["lists"] %}
+        {{l.id}}
+        {{l.title}}
+        {{l.user_id}}
+        {{l.book_id}}
+        <br>
+    {% endfor %}
+</div>
+<div>
+    <h2>All Words</h2>
+</div>
+
+{% endblock %}

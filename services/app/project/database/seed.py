@@ -22,7 +22,7 @@ def generate_users(n):
             email=faker.email(),
             password=get_password_hash(faker.password()),
             status=UserStatus.active,
-            tier=UserTier.admin,
+            tier=UserTier.regular,
         )
         db.session.add(user)
     db.session.commit()

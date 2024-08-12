@@ -21,7 +21,7 @@ def admin_required(f):
             return redirect(url_for("auth_bp.login", next=request.url))
         elif current_user.tier != UserTier.admin:
             # TODO: Create Home Page to redirect for
-            return redirect(url_for("auth_bp.index", next=request.url))
+            return redirect(url_for("home_bp.index", next=request.url))
         return f(*args, **kwargs)
 
     return decorated_function
@@ -39,4 +39,11 @@ def admin_required(f):
 @admin_required
 def dashboard():
     users = admin.get_all_users()
-    return render_template("admin.html", title="Admin Dashboard", users=users)
+    books = admin.get_all_books()
+    words = admin.get_all_words()
+    data = {
+        "users": users,
+        "books": books,
+        # "words": [words]
+    }
+    return render_template("admin.html", title="Admin Dashboard", data=data)

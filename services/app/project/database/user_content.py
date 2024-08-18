@@ -49,4 +49,6 @@ def get_list_detail(list_id) -> VocabList:
                 w.definition_secondary,
             )
         )
+    if not vl:
+        return None
     return VocabList(vl.id, vl.user_id, words=words, title=vl.title, book_id=vl.book_id)

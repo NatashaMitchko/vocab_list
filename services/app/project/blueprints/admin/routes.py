@@ -44,6 +44,6 @@ def dashboard():
     data = {
         "users": users,
         "books": books,
-        # "words": [words]
+        "words": words
     }
     return render_template("admin.html", title="Admin Dashboard", data=data)

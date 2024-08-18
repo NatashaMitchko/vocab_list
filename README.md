@@ -1,6 +1,8 @@
 # Vocabulary List
 
 next:
+- fix db model situation https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
+
 - Need to create new list and book blueprints
 
 - RBAC https://pythonhosted.org/Flask-Principal/

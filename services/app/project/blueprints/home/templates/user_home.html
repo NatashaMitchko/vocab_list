@@ -16,7 +16,7 @@
         {% for l in data["lists"] %}
         <tr>
             <td><a href="/list/{{l.id}}">{{ l.title }}</a></td>
-            <td>{{ l.book_id }}</td>
+            <td><a href="/book/{{l.book_id}}"></a>{{ l.book_id }}</a></td>
             <td>{{ l.num_words }}</td>
         </tr>
         {% endfor %}

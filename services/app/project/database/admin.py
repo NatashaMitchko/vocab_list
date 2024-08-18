@@ -1,6 +1,7 @@
 from project.database.model import db, UserORM, BookORM, ListORM, ListWordORM, WordORM
 from project.database.user import User
-from project.database.list import VocabList, Word
+from project.database.list import Word
+
 
 def get_all_users():
     """
@@ -13,18 +14,28 @@ def get_all_users():
         result.append(User(u.id, u.username, u.email, u.status, u.tier))
     return result
 
+
 def get_all_books():
     db_books = db.session.query(BookORM).all()
-    result = []
-    # for b in db_books:
-    #     Book()
-    #     result.append()
-    return result
+    return db_books
 
 
 def get_all_words():
-    list_id = 1
-    return []
+    db_words = db.session.query(WordORM).limit(10)
+    result = []
+    for w in db_words:
+        result.append(
+            Word(
+                w.id,
+                w.word,
+                w.part_of_speech,
+                w.definition_primary,
+                w.definition_secondary,
+            )
+        )
+    return result
+
+
 """
 List -> get User
 List -> get Words

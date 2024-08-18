@@ -60,7 +60,7 @@ class ListORM(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, nullable=False, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    book_id = db.Column(db.Integer, db.ForeignKey("books.id"), nullable=True)
+    book_id = db.Column(db.Integer, db.ForeignKey("books.id"))
     title = db.Column(db.String(128))
 
     book = db.relationship("BookORM", backref="lists")

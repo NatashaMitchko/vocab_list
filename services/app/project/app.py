@@ -26,6 +26,10 @@ def create_app(config_filename):
 
     app.register_blueprint(home_bp)
 
+    from project.blueprints.list.routes import list_bp
+
+    app.register_blueprint(list_bp, url_prefix="/list")
+
     from project.blueprints.auth.routes import login_manager
 
     login_manager.init_app(app)

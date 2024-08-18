@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Word Count = {{ data.num_words }}
+
+<table id="vocabListsTable" class="display">
+    <thead>
+        <tr>
+            <th>Word</th>
+            <th>Part of Speech</th>
+            <th>Primary Definition</th>
+            <th>Secondary Definition</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for w in data.words %}
+        <tr>
+            <td>{{w.word}}</td>
+            <td>{{w.part_of_speech}}</td>
+            <td>{{w.definition_primary}}</td>
+            <td>{{w.definition_secondary}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#vocabListsTable').DataTable();
+    });
+  </script>
+{% endblock %}
